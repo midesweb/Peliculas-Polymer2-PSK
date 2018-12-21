@@ -1,0 +1,48 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="pelicula-item">
+  <template>
+    <style>
+      :host {
+        display: block
+      }
+    </style>
+
+    [[pelicula.nombre]]
+    <a href$="/editar-pelicula/[[pelicula.id]]">Editar</a>
+
+  </template>
+
+  <script>
+    /**
+     * `pelicula-item` Description
+     *
+     * @summary ShortDescription.
+     * @customElement
+     * @polymer
+     * @extends {Polymer.Element}
+     */
+    class PeliculaItem extends Polymer.Element {
+      /**
+       * String providing the tag name to register the element under.
+       */
+      static get is() {
+        return 'pelicula-item';
+      }
+
+      /**
+       * Object describing property-related metadata used by Polymer features
+       */
+      static get properties() {
+        return {
+          pelicula: Object,
+        };
+      }
+
+
+
+    }
+
+    window.customElements.define(PeliculaItem.is, PeliculaItem);
+  </script>
+</dom-module>

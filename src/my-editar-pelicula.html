@@ -1,0 +1,97 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+
+
+<dom-module id="my-editar-pelicula">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <app-route
+    route="{{route}}"
+    pattern="/:id"
+    data="{{routeData}}"
+    ></app-route>
+
+    <iron-ajax
+      id="elajax"
+      url="http://localhost:3000/peliculas/[[routeData.id]]"
+      handle-as="json"
+      last-response="{{pelicula}}"      
+    ></iron-ajax>
+    <iron-ajax
+      id="elajaxput"
+      method="put"
+      url="http://localhost:3000/peliculas/[[routeData.id]]"
+      handle-as="json"
+      body="[[pelicula]]"   
+      content-type="application/json"
+      on-response="putResponse"
+      on-error="putError"
+    ></iron-ajax>
+
+    <div class="card">
+      <div class="circle">3</div>
+      <h1>Editar una película</h1>
+      [[pelicula.nombre]]
+
+      <paper-input label="Nombre" value="{{pelicula.nombre}}"></paper-input>
+      <paper-input label="Director" value="{{pelicula.director}}"></paper-input>
+      <paper-button on-click="editar">Editar</paper-button>
+    </div>
+  </template>
+
+  <script>
+    class MyEditarPelicula extends Polymer.Element {
+      static get is() { return 'my-editar-pelicula'; }
+
+      /**
+        * Array of strings describing multi-property observer methods and their
+        * dependant properties
+        */
+      static get observers() {
+        return [
+          'idChanged(routeData.id)'
+        ];
+      }
+
+      idChanged(id) {
+        console.log('id a editar', id);
+        this.$.elajax.generateRequest();
+      }
+
+      editar() {
+        if(this.pelicula.nombre == '') {
+          return false;
+        }
+        this.$.elajaxput.generateRequest()
+      }
+
+      putResponse(e) {
+        console.log(e.detail);
+        this.dispatchEvent(new CustomEvent('put-response'));
+      }
+      putError(e) {
+        console.log(e.detail)
+      }
+    }
+
+    window.customElements.define(MyEditarPelicula.is, MyEditarPelicula);
+  </script>
+</dom-module>
